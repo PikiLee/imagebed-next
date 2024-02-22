@@ -1,4 +1,4 @@
-import { getFile } from '@/utils/file'
+import { getFile } from '@/lib/file'
 
 export async function GET(
   request: Request,

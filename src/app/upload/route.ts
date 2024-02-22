@@ -1,5 +1,5 @@
-import { uploadFile } from '@/utils/file'
-import { generateID } from '@/utils/generateID'
+import { uploadFile } from '@/lib/file'
+import { generateID } from '@/lib/generateID'
 import { File } from 'buffer'
 
 export async function POST(request: Request) {
