@@ -1,5 +1,10 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3'
 import { cleanEnv, str } from 'envalid'
+import { Readable } from 'stream'
 
 const env = cleanEnv(process.env, {
   ENDPOINT: str(),
@@ -25,4 +30,20 @@ export function uploadFile(key: string, file: Buffer) {
       Body: file,
     })
   )
+}
+
+export async function getFile(key: string): Promise<Buffer> {
+  const res = await client.send(
+    new GetObjectCommand({ Bucket: env.BUCKET, Key: key })
+  )
+  if (!res.Body) throw new Error('No body in response')
+  return Buffer.from(await streamToBuffer(res.Body as Readable))
+}
+
+async function streamToBuffer(stream: Readable) {
+  const chunks = []
+  for await (let chunk of stream) {
+    chunks.push(chunk)
+  }
+  return Buffer.concat(chunks)
 }
