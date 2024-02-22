@@ -4,11 +4,19 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { Button } from './ui/button'
+import { H2 } from './ui/h2'
+import { P } from './ui/p'
+import { H3 } from './ui/h3'
+import Link from 'next/link'
+import { useToast } from '@/components/ui/use-toast'
+import Image from 'next/image'
 
 export default function UploadButton() {
   const [loading, setLoading] = useState(false)
   const [url, setUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const { toast } = useToast()
 
   async function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -34,25 +42,41 @@ export default function UploadButton() {
     setLoading(false)
   }
   return (
-    <div>
+    <div className="flex flex-col gap-4 items-center justify-center">
+      <H2>Upload Image</H2>
       {!loading ? (
         url ? (
           <>
-            <div>Image Url</div>
-            <p>{url}</p>
-            <Button
-              onClick={() => {
-                setLoading(false)
-                setError(null)
-                setUrl(null)
-              }}
-            >
-              Upload again
-            </Button>
+            <H3>Uploading has succeeded! Copy the image URL.</H3>
+            <Link href={url} target="blank">
+              {url}
+            </Link>
+            <div className="flex gap-4">
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(url)
+                  toast({
+                    title: 'URL copied',
+                  })
+                }}
+              >
+                Copy URL
+              </Button>
+              <Button
+                onClick={() => {
+                  setLoading(false)
+                  setError(null)
+                  setUrl(null)
+                }}
+              >
+                Upload New Image
+              </Button>
+            </div>
+            <Image src={url} alt="Uploaded image" width={1920} height={1080} />
           </>
         ) : (
           <>
-            <Label htmlFor="image">Upload Image</Label>
+            <Label htmlFor="image">Select a Image</Label>
             <Input
               id="image"
               type="file"
@@ -62,9 +86,9 @@ export default function UploadButton() {
           </>
         )
       ) : (
-        <div>Uploading...</div>
+        <P>Uploading...</P>
       )}
-      {error && <p>{error}</p>}
+      {error && <P>{error}</P>}
     </div>
   )
 }
