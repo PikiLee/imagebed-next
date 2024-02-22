@@ -9,7 +9,6 @@ import { P } from './ui/p'
 import { H3 } from './ui/h3'
 import Link from 'next/link'
 import { useToast } from '@/components/ui/use-toast'
-import Image from 'next/image'
 
 export default function UploadButton() {
   const [loading, setLoading] = useState(false)
@@ -72,7 +71,6 @@ export default function UploadButton() {
                 Upload New Image
               </Button>
             </div>
-            <Image src={url} alt="Uploaded image" width={1920} height={1080} />
           </>
         ) : (
           <>
