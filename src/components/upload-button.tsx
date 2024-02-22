@@ -3,6 +3,7 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
+import { Button } from './ui/button'
 
 export default function UploadButton() {
   const [loading, setLoading] = useState(false)
@@ -35,15 +36,35 @@ export default function UploadButton() {
   return (
     <div>
       {!loading ? (
-        <>
-          <Label htmlFor="image">Upload Image</Label>
-          <Input id="image" type="file" accept="image/*" onChange={onChange} />
-        </>
+        url ? (
+          <>
+            <div>Image Url</div>
+            <p>{url}</p>
+            <Button
+              onClick={() => {
+                setLoading(false)
+                setError(null)
+                setUrl(null)
+              }}
+            >
+              Upload again
+            </Button>
+          </>
+        ) : (
+          <>
+            <Label htmlFor="image">Upload Image</Label>
+            <Input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={onChange}
+            />
+          </>
+        )
       ) : (
         <div>Uploading...</div>
       )}
       {error && <p>{error}</p>}
-      {url && <p>{url}</p>}
     </div>
   )
 }
