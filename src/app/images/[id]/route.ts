@@ -2,12 +2,10 @@ import { getFile } from '@/utils/file'
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
-  const key = `images/${params.slug}`
-
+  const key = `images/${params.id}`
   const image = await getFile(key)
-  console.log(image)
 
   return new Response(image)
 }

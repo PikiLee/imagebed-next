@@ -14,6 +14,7 @@ export async function POST(request: Request) {
   await uploadFile(key, buf)
 
   const origin = new URL(request.url).origin
+  console.log(origin)
 
   return Response.json({ url: `${origin}/${key}` })
 }
