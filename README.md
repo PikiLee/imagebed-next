@@ -1,4 +1,4 @@
-A user interface to upload images and obtain the URLs for those images. 
+An image bed server with a user interface to upload images and obtain the URLs for those images. 
 + Constructed using Next.js
 + The images uploaded are stored on Cloudflare R2.
 + The user interface is protected by a password.
