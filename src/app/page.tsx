@@ -1,4 +1,4 @@
-import UploadButton from '@/components/upload-button'
+import UploadButton from '@/components/upload-button/upload-button'
 
 export default function Home() {
   return (
