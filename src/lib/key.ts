@@ -11,10 +11,8 @@ export function generateID() {
 
 // Add a prefix to the key to separate dev and prod files
 const environmentPrefix = process.env.NODE_ENV === 'production' ? 'prod' : 'dev'
-function addEnvironmentPrefix(key: string) {
-  return `${environmentPrefix}/${key}`
-}
+export const prefix = `${environmentPrefix}/images/`
 
 export function getImageKey(id: string) {
-  return addEnvironmentPrefix(`images/${id}`)
+  return `${prefix}${id}`
 }
