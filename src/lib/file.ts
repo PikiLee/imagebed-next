@@ -1,5 +1,6 @@
 import {
   GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
@@ -42,6 +43,17 @@ export async function getFile(key: string): Promise<Buffer> {
   )
   if (!res.Body) throw new Error('No body in response')
   return Buffer.from(await streamToBuffer(res.Body as Readable))
+}
+
+export async function listFiles(prefix: string, continuationToken?: string) {
+  return await client.send(
+    new ListObjectsV2Command({
+      Bucket: env.BUCKET,
+      Prefix: prefix,
+      MaxKeys: 2,
+      ContinuationToken: continuationToken,
+    })
+  )
 }
 
 // Convert a readable stream to a buffer
