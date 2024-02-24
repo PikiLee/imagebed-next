@@ -1,5 +1,5 @@
 import { uploadFile } from '@/lib/file'
-import { generateID } from '@/lib/generateID'
+import { generateID, getImageKey } from '@/lib/key'
 import { File } from 'buffer'
 
 export async function POST(request: Request) {
@@ -10,10 +10,11 @@ export async function POST(request: Request) {
   }
   const buf = Buffer.from(await image.arrayBuffer())
 
-  const key = `images/${image.name.split('.')[0]}-${generateID()}`
+  const id = generateID()
+  const key = getImageKey(id)
   await uploadFile(key, buf)
 
   const origin = new URL(request.url).origin
 
-  return Response.json({ url: `${origin}/${key}` })
+  return Response.json({ url: `${origin}/images/${id}` })
 }
