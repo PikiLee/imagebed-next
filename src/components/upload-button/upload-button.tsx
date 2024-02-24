@@ -4,7 +4,6 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { Button } from '../ui/button'
-import { H2 } from '../ui/h2'
 import { P } from '../ui/p'
 import { H3 } from '../ui/h3'
 import Link from 'next/link'
@@ -44,7 +43,6 @@ export default function UploadButton() {
   }
   return (
     <div className="flex flex-col gap-4 items-center justify-center">
-      <H2>Upload Image</H2>
       {!loading ? (
         url ? (
           <>
