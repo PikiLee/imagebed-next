@@ -50,7 +50,7 @@ export async function listFiles(prefix: string, continuationToken?: string) {
     new ListObjectsV2Command({
       Bucket: env.BUCKET,
       Prefix: prefix,
-      MaxKeys: 2,
+      MaxKeys: 10,
       ContinuationToken: continuationToken,
     })
   )
