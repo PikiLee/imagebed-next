@@ -9,10 +9,12 @@ import { P } from '../ui/p'
 import { H3 } from '../ui/h3'
 import Link from 'next/link'
 import { useToast } from '@/components/ui/use-toast'
+import Image from 'next/image'
 
 export default function UploadButton() {
   const [loading, setLoading] = useState(false)
   const [url, setUrl] = useState<string | null>(null)
+  const path = url?.match(/\/images\/.*/)?.[0]
   const [error, setError] = useState<string | null>(null)
 
   const { toast } = useToast()
@@ -71,6 +73,14 @@ export default function UploadButton() {
                 Upload New Image
               </Button>
             </div>
+            {path && (
+              <Image
+                src={path}
+                width={1920}
+                height={1080}
+                alt="Uploaded Image"
+              />
+            )}
           </>
         ) : (
           <>

@@ -2,7 +2,7 @@ import UploadButton from '@/components/upload-button/upload-button'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center container">
+    <main className="flex min-h-screen flex-col items-center justify-center container py-24">
       <UploadButton />
     </main>
   )
