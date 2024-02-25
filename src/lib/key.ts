@@ -1,12 +1,7 @@
-export function generateID() {
-  const characters =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let id = ''
-  for (let i = 0; i < 10; i++) {
-    id += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
+import { randomUUID } from 'crypto'
 
-  return id
+export function generateID() {
+  return randomUUID()
 }
 
 // Add a prefix to the key to separate dev and prod files
