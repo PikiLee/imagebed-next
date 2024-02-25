@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 
-import { env } from './env'
 import { isDev } from './isDev'
+import { publicEnv } from './publicEnv'
 
 export function generateID() {
   return randomUUID()
@@ -14,5 +14,5 @@ export function getImageKey(id: string) {
 }
 
 export function getURLFromKey(key: string) {
-  return `${isDev ? 'http://localhost:3000' : env.DOMAIN}/${key}`
+  return `${isDev ? 'http://localhost:3000' : publicEnv.NEXT_PUBLIC_DOMAIN}/${key}`
 }

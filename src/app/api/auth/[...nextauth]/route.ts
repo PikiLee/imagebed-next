@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-import { env } from '@/lib/env'
+import { privateEnv } from '@/lib/priavteEnv'
 
 const handler = NextAuth({
   providers: [
@@ -22,7 +22,7 @@ const handler = NextAuth({
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        const password = env.PASSWORD
+        const password = privateEnv.PASSWORD
         if (password && credentials?.password === password) {
           return { id: 'id' }
         } else {

@@ -35,5 +35,5 @@ NEXTAUTH_SECRET=
 PASSWORD=
 
 # The domain name of your website
-DOMAIN=
+NEXT_PUBLIC_DOMAIN==
 ```
