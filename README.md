@@ -33,4 +33,7 @@ NEXTAUTH_SECRET=
 
 # A password used to guard the user interface
 PASSWORD=
+
+# The domain name of your website
+DOMAIN=
 ```
