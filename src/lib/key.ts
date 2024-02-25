@@ -13,5 +13,5 @@ export function getImageKey(id: string) {
 }
 
 export function getURLFromKey(key: string) {
-  return `${isDev ? env.DOMAIN : 'http://localhost:3000'}/${key}`
+  return `${isDev ? 'http://localhost:3000' : env.DOMAIN}/${key}`
 }

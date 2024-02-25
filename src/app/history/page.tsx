@@ -12,20 +12,15 @@ export default async function History() {
       <H2>History</H2>
       <ul className="grid grid-cols-3 gap-4">
         {images.Contents?.map((image) => {
-          const path = `/${image.Key}`
+          const url = image.Key ? getURLFromKey(image.Key) : ''
           return (
             image.Key &&
-            path && (
+            url && (
               <li key={image.Key}>
-                <Link href={path} target="_blank">
-                  <Image
-                    src={path}
-                    alt={image.Key}
-                    width={1920}
-                    height={1080}
-                  />
+                <Link href={url} target="_blank">
+                  <Image src={url} alt={image.Key} width={1920} height={1080} />
                 </Link>
-                <Link href={path}>{getURLFromKey(image.Key)}</Link>
+                <Link href={url}>{url}</Link>
               </li>
             )
           )
