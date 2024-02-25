@@ -1,5 +1,5 @@
 import { uploadFile } from '@/lib/file'
-import { generateID, getImageKey } from '@/lib/key'
+import { generateID, getImageKey, getURLFromKey } from '@/lib/key'
 import { File } from 'buffer'
 
 export async function POST(request: Request) {
@@ -14,7 +14,5 @@ export async function POST(request: Request) {
   const key = getImageKey(id)
   await uploadFile(key, buf)
 
-  const origin = new URL(request.url).origin
-
-  return Response.json({ url: `${origin}/images/${id}` })
+  return Response.json({ url: getURLFromKey(key) })
 }
