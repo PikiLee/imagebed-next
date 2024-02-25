@@ -18,6 +18,9 @@ const config = {
         '2xl': '1400px',
       },
     },
+    maxWidth: {
+      120: '30rem',
+    },
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

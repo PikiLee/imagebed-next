@@ -1,3 +1,4 @@
+import ImageCard from '@/components/image-card'
 import { H2 } from '@/components/ui/h2'
 import { listFiles } from '@/lib/file'
 import { getURLFromKey, prefix } from '@/lib/key'
@@ -17,10 +18,7 @@ export default async function History() {
             image.Key &&
             url && (
               <li key={image.Key}>
-                <Link href={url} target="_blank">
-                  <Image src={url} alt={image.Key} width={1920} height={1080} />
-                </Link>
-                <Link href={url}>{url}</Link>
+                <ImageCard url={url} />
               </li>
             )
           )
