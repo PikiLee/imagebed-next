@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto'
-import { cleanEnv, str } from 'envalid'
+import { isDev } from './isDev'
+import { env } from './env'
 
 export function generateID() {
   return randomUUID()
@@ -12,11 +13,5 @@ export function getImageKey(id: string) {
 }
 
 export function getURLFromKey(key: string) {
-  return `${
-    process.env.NODE_ENV === 'production'
-      ? cleanEnv(process.env, {
-          DOMAIN: str(),
-        }).DOMAIN
-      : 'http://localhost:3000'
-  }/${key}`
+  return `${isDev ? env.DOMAIN : 'http://localhost:3000'}/${key}`
 }

@@ -4,16 +4,8 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
-import { cleanEnv, str } from 'envalid'
 import { Readable } from 'stream'
-
-// Validate and retrieve environment variables
-const env = cleanEnv(process.env, {
-  ENDPOINT: str(),
-  ACCESS_KEY_ID: str(),
-  SECRET_ACCESS_KEY: str(),
-  BUCKET: str(),
-})
+import { env } from './env'
 
 // Create an R2 client instance
 const client = new S3Client({

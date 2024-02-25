@@ -1,3 +1,4 @@
+import { env } from '@/lib/env'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
@@ -20,7 +21,7 @@ const handler = NextAuth({
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        const password = process.env.PASSWORD
+        const password = env.PASSWORD
         if (password && credentials?.password === password) {
           return { id: 'id' }
         } else {
