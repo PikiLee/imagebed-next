@@ -1,18 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
+import ImageCard from '@/components/image-card'
+import { Button } from '@/components/ui/button'
+import { H3 } from '@/components/ui/h3'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-
-import ImageCard from '../image-card'
-import { H3 } from '../ui/h3'
-import { P } from '../ui/p'
+import { P } from '@/components/ui/p'
 
 export default function UploadButton() {
   const [loading, setLoading] = useState(false)
   const [url, setUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const inputRef = useRef<HTMLInputElement>(null)
 
   async function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -39,8 +40,16 @@ export default function UploadButton() {
   }
   return (
     <div className="flex flex-col gap-4 items-center justify-center max-w-120">
-      <Label htmlFor="image">Select a Image</Label>
-      <Input id="image" type="file" accept="image/*" onChange={onChange} />
+      <Button onClick={() => inputRef.current?.click()}>
+        {loading ? 'Uploading...' : 'Upload Image'}
+      </Button>
+      <Input
+        className="fixed left-[-9999px] top-0"
+        type="file"
+        accept="image/*"
+        onChange={onChange}
+        ref={inputRef}
+      />
       {url && (
         <>
           <H3 className="text-center">
@@ -49,8 +58,6 @@ export default function UploadButton() {
           <ImageCard url={url} />
         </>
       )}
-
-      {loading && <P>Uploading...</P>}
       {error && <P>{error}</P>}
     </div>
   )
