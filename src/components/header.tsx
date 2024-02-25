@@ -1,9 +1,10 @@
 'use client'
 
-import { signOut } from 'next-auth/react'
-import { H1 } from './ui/h1'
-import { Button } from './ui/button'
 import Link from 'next/link'
+import { signOut } from 'next-auth/react'
+
+import { Button } from './ui/button'
+import { H1 } from './ui/h1'
 
 export default function Header() {
   return (

@@ -1,22 +1,18 @@
 'use client'
 
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 import { useState } from 'react'
-import { Button } from '../ui/button'
-import { P } from '../ui/p'
-import { H3 } from '../ui/h3'
-import Link from 'next/link'
-import { useToast } from '@/components/ui/use-toast'
-import Image from 'next/image'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+
 import ImageCard from '../image-card'
+import { H3 } from '../ui/h3'
+import { P } from '../ui/p'
 
 export default function UploadButton() {
   const [loading, setLoading] = useState(false)
   const [url, setUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-
-  const { toast } = useToast()
 
   async function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]

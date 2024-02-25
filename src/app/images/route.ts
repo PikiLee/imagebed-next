@@ -1,6 +1,7 @@
+import { NextRequest } from 'next/server'
+
 import { listFiles } from '@/lib/file'
 import { prefix } from '@/lib/key'
-import { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest) {
   const continuationToken =

@@ -1,6 +1,7 @@
+import { File } from 'buffer'
+
 import { uploadFile } from '@/lib/file'
 import { generateID, getImageKey, getURLFromKey } from '@/lib/key'
-import { File } from 'buffer'
 
 export async function POST(request: Request) {
   const formData = await request.formData()

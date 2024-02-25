@@ -1,15 +1,10 @@
 'use client'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import Image from 'next/image'
 import Link from 'next/link'
+
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+
 import { Button } from './ui/button'
 import { useToast } from './ui/use-toast'
 

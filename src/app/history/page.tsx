@@ -2,8 +2,6 @@ import ImageCard from '@/components/image-card'
 import { H2 } from '@/components/ui/h2'
 import { listFiles } from '@/lib/file'
 import { getURLFromKey, prefix } from '@/lib/key'
-import Image from 'next/image'
-import Link from 'next/link'
 
 export default async function History() {
   const images = await listFiles(prefix)
