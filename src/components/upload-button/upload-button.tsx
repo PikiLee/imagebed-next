@@ -27,7 +27,7 @@ export default function UploadButton() {
     setUrl(null)
     const formData = new FormData()
     formData.append('image', file)
-    const res = await fetch('/upload', {
+    const res = await fetch('/api/upload', {
       method: 'POST',
       body: formData,
     })
