@@ -2,11 +2,13 @@
 
 import { useRef, useState } from 'react'
 
-import ImageCard from '@/components/image-card'
 import { Button } from '@/components/ui/button'
 import { H3 } from '@/components/ui/h3'
 import { Input } from '@/components/ui/input'
 import { P } from '@/components/ui/p'
+
+import ImageCard from '../image-card'
+import ImageCardSkeleton from '../ImageCardSkeleton'
 
 export default function UploadButton() {
   const [loading, setLoading] = useState(false)
@@ -39,7 +41,7 @@ export default function UploadButton() {
     setLoading(false)
   }
   return (
-    <div className="flex flex-col gap-4 items-center justify-center max-w-120">
+    <div className="flex flex-col gap-4 items-center justify-center w-full max-w-120">
       <Button onClick={() => inputRef.current?.click()} disabled={loading}>
         {loading ? 'Uploading...' : 'Upload Image'}
       </Button>
@@ -51,13 +53,11 @@ export default function UploadButton() {
         ref={inputRef}
       />
       {url && (
-        <>
-          <H3 className="text-center">
-            Uploading succeeded! Copy the image URL.
-          </H3>
-          <ImageCard url={url} />
-        </>
+        <H3 className="text-center">
+          Uploading succeeded! Copy the image URL.
+        </H3>
       )}
+      {loading ? <ImageCardSkeleton /> : url && <ImageCard url={url} />}
       {error && <P>{error}</P>}
     </div>
   )

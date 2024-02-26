@@ -4,7 +4,7 @@ import { Skeleton } from './ui/skeleton'
 
 export default function ImageCardSkeleton() {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader></CardHeader>
       <CardContent>
         <Skeleton className="aspect-video" />
