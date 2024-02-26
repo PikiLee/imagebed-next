@@ -10,7 +10,7 @@ import ImageCard from '@/components/image-card'
 import { getKey } from '@/lib/getKey'
 import { getImageKey, getURLFromKey } from '@/lib/key'
 
-import ImageCardSkeleton from './ImageCardSkeleton'
+import ImageCardSkeleton from './image-card-skeleton'
 import { P } from './ui/p'
 import { useToast } from './ui/use-toast'
 

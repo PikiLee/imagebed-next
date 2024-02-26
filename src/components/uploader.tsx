@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { P } from '@/components/ui/p'
 
 import ImageCard from './image-card'
-import ImageCardSkeleton from './ImageCardSkeleton'
+import ImageCardSkeleton from './image-card-skeleton'
 import { useToast } from './ui/use-toast'
 
 export default function Uploader() {

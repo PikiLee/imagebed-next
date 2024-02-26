@@ -1,7 +1,7 @@
 import { unstable_serialize as infinite_unstable_serialize } from 'swr/infinite'
 
-import ImageGrid from '@/components/ImageGrid'
-import { SWRProvider } from '@/components/SWRProvider'
+import ImageGrid from '@/components/image-grid'
+import { SWRProvider } from '@/components/SWR-provider'
 import { H2 } from '@/components/ui/h2'
 import { listFiles } from '@/lib/file'
 import { getKey } from '@/lib/getKey'
