@@ -30,21 +30,15 @@ export default function ImageGrid({}: {}) {
     setSize,
     isLoading: isInitialLoading,
     mutate,
-  } = useSWRInfinite(
-    getKey,
-    ({ pageIndex, NextContinuationToken }) => {
-      return fetch(
-        `/api/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
-      ).then((res) => {
-        if (res.ok) return res.json()
+  } = useSWRInfinite(getKey, ({ pageIndex, NextContinuationToken }) => {
+    return fetch(
+      `/api/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
+    ).then((res) => {
+      if (res.ok) return res.json()
 
-        throw new Error('Failed to load more images')
-      })
-    },
-    {
-      revalidateOnMount: true,
-    }
-  )
+      throw new Error('Failed to load more images')
+    })
+  })
 
   const isLoading =
     isInitialLoading ||
