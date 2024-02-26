@@ -20,7 +20,7 @@ export default function ImageCard({
     <Card>
       <CardHeader></CardHeader>
       <CardContent>
-        <img src={url} alt="image" width={1920} height={1080} />
+        <img src={url} alt="Uploaded Image" width={1920} height={1080} />
       </CardContent>
       <CardFooter>
         <div className="flex flex-col gap-4">
