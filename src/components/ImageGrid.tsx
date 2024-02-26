@@ -1,67 +1,70 @@
 'use client'
 
-import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3'
 import { useInView } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import useSWRInfinite from 'swr/infinite'
 
 import ImageCard from '@/components/image-card'
+import { getKey } from '@/lib/getKey'
 import { getURLFromKey } from '@/lib/key'
 
-export default function ImageGrid({
-  images: _images,
-}: {
-  images: ListObjectsV2CommandOutput
-}) {
-  const [images, setImages] = useState(_images)
-  const imagesRef = useRef(_images)
+import { Skeleton } from './ui/skeleton'
+
+export default function ImageGrid({}: {}) {
+  const { data, error, setSize, isValidating } = useSWRInfinite(
+    getKey,
+    ({ pageIndex, NextContinuationToken }) => {
+      //   console.log('fetching', pageIndex, NextContinuationToken)
+      return fetch(
+        `/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
+      ).then((res) => res.json())
+    }
+  )
+  const images = {
+    Contents: data?.flatMap((d) => d.Contents ?? []),
+    IsTruncated: data ? data[data.length - 1].IsTruncated : false,
+  }
+  const imagesRef = useRef(images)
   if (imagesRef.current !== images) imagesRef.current = images
-  console.log('images', images.Contents?.length)
   const urls = images.Contents?.map(
     (image) => image.Key && getURLFromKey(image.Key)
   )
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(loadMoreRef, { margin: '0px 0px 0px 0px' })
+  const inView = useInView(loadMoreRef, { margin: '0px 0px -50px 0px' })
 
   useEffect(() => {
-    async function loadMore() {
-      console.log(
-        'imagesRef.current.Contents.length',
-        imagesRef.current.Contents?.length
-      )
-      const res = await fetch(
-        `/images?continuationToken=${imagesRef.current.NextContinuationToken}`
-      )
-      if (!res.ok) return
-
-      const _newImages = await res.json()
-      const newImages = Object.assign({}, imagesRef.current, _newImages)
-      newImages.Contents = [
-        ...(imagesRef.current.Contents ?? []),
-        ..._newImages.Contents,
-      ]
-      setImages(newImages)
+    if (inView) {
+      setSize((size) => size + 1)
     }
-
-    if (inView && imagesRef.current.IsTruncated) {
-      console.log('load more')
-      loadMore()
-    }
-  }, [inView])
+  }, [inView, setSize])
 
   return (
-    <ul className="grid grid-cols-3 gap-4">
-      {urls?.map((url) => {
-        return (
-          url && (
-            <li key={url}>
-              <ImageCard url={url} />
-            </li>
+    <>
+      <ul className="grid grid-cols-3 gap-4">
+        {urls?.map((url) => {
+          return (
+            url && (
+              <li key={url}>
+                <ImageCard url={url} />
+              </li>
+            )
           )
-        )
-      })}
+        })}
+
+        {isValidating &&
+          Array.from({ length: 3 }).map((_, i) => (
+            <div className="flex items-center space-x-4" key={i}>
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+              </div>
+            </div>
+          ))}
+      </ul>
 
       <div ref={loadMoreRef}></div>
-    </ul>
+    </>
   )
 }
