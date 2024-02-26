@@ -11,12 +11,15 @@ import { getImageKey, getURLFromKey } from '@/lib/key'
 
 import ImageCardSkeleton from './ImageCardSkeleton'
 import { P } from './ui/p'
+import { useToast } from './ui/use-toast'
 
 type ArrayElement<ArrType> = ArrType extends readonly (infer ElementType)[]
   ? ElementType
   : never
 
 export default function ImageGrid({}: {}) {
+  const { toast } = useToast()
+
   const {
     data,
     error,
@@ -56,32 +59,40 @@ export default function ImageGrid({}: {}) {
     }
   }, [inView, setSize, isLoading])
 
-  function onDelete(url: string) {
-    const match = url.match(/images\/(?<id>.*)/)
-    const id = match?.groups?.id
-    if (id) {
-      mutate(
-        () => {
-          return fetch(`/api/images`, {
-            method: 'DELETE',
-            body: JSON.stringify({ id }),
-          }).then((res) => {
-            return res.json()
-          })
-        },
-        {
-          optimisticData: data?.map((d) => {
-            return {
-              ...d,
-              Contents: d.Contents?.filter(
-                (c: ArrayElement<ListObjectsV2CommandOutput['Contents']>) =>
-                  c.Key !== getImageKey(id)
-              ),
-            }
-          }),
-          populateCache: false,
-        }
-      )
+  async function onDelete(url: string) {
+    try {
+      const match = url.match(/images\/(?<id>.*)/)
+      const id = match?.groups?.id
+      if (id) {
+        await mutate(
+          async () => {
+            const res = await fetch(`/api/images`, {
+              method: 'DELETE',
+              body: JSON.stringify({ id }),
+            })
+            if (res.ok) return res.json()
+            throw new Error('Failed to delete image.')
+          },
+          {
+            optimisticData: data?.map((d) => {
+              return {
+                ...d,
+                Contents: d.Contents?.filter(
+                  (c: ArrayElement<ListObjectsV2CommandOutput['Contents']>) =>
+                    c.Key !== getImageKey(id)
+                ),
+              }
+            }),
+            populateCache: false,
+          }
+        )
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast({
+          title: e.message,
+        })
+      }
     }
   }
 
