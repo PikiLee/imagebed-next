@@ -40,7 +40,7 @@ export default function UploadButton() {
   }
   return (
     <div className="flex flex-col gap-4 items-center justify-center max-w-120">
-      <Button onClick={() => inputRef.current?.click()}>
+      <Button onClick={() => inputRef.current?.click()} disabled={loading}>
         {loading ? 'Uploading...' : 'Upload Image'}
       </Button>
       <Input
