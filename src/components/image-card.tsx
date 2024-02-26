@@ -38,7 +38,9 @@ export default function ImageCard({
           >
             Copy URL
           </Button>
-          <Button onClick={() => onDelete(url)}>Delete</Button>
+          <Button onClick={() => onDelete(url)} variant="destructive">
+            Delete
+          </Button>
         </div>
       </CardFooter>
     </Card>
