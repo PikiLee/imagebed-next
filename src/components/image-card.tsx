@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
@@ -21,7 +20,7 @@ export default function ImageCard({
     <Card>
       <CardHeader></CardHeader>
       <CardContent>
-        <Image src={url} alt="image" width={1920} height={1080} />
+        <img src={url} alt="image" width={1920} height={1080} />
       </CardContent>
       <CardFooter>
         <div className="flex flex-col gap-4">
