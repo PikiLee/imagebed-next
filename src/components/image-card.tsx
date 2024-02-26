@@ -11,6 +11,27 @@ import { useToast } from './ui/use-toast'
 export default function ImageCard({ url }: { url: string }) {
   const { toast } = useToast()
 
+  async function onDelete() {
+    const match = url.match(/images\/(?<id>.*)/)
+    const id = match?.groups?.id
+    if (id) {
+      const res = await fetch(`/api/images`, {
+        method: 'DELETE',
+        body: JSON.stringify({ id }),
+      })
+
+      if (res.ok) {
+        toast({
+          title: 'Image deleted',
+        })
+      } else {
+        toast({
+          title: 'Failed to delete image',
+        })
+      }
+    }
+  }
+
   return (
     <Card>
       <CardHeader></CardHeader>
@@ -32,6 +53,7 @@ export default function ImageCard({ url }: { url: string }) {
           >
             Copy URL
           </Button>
+          <Button onClick={onDelete}>Delete</Button>
         </div>
       </CardFooter>
     </Card>

@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   ListObjectsV2Command,
   PutObjectCommand,
@@ -46,6 +47,12 @@ export async function listFiles(prefix: string, continuationToken?: string) {
       MaxKeys: 6,
       ContinuationToken: continuationToken,
     })
+  )
+}
+
+export async function deleteFile(key: string) {
+  return await client.send(
+    new DeleteObjectCommand({ Bucket: privateEnv.BUCKET, Key: key })
   )
 }
 
