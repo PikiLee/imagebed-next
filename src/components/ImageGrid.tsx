@@ -9,6 +9,7 @@ import { getKey } from '@/lib/getKey'
 import { getURLFromKey } from '@/lib/key'
 
 import ImageCardSkeleton from './ImageCardSkeleton'
+import { P } from './ui/p'
 
 export default function ImageGrid({}: {}) {
   const {
@@ -20,7 +21,11 @@ export default function ImageGrid({}: {}) {
   } = useSWRInfinite(getKey, ({ pageIndex, NextContinuationToken }) => {
     return fetch(
       `/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
-    ).then((res) => res.json())
+    ).then((res) => {
+      if (res.ok) return res.json()
+
+      throw new Error('Failed to load more images')
+    })
   })
   const isLoading =
     isInitialLoading ||
@@ -58,10 +63,12 @@ export default function ImageGrid({}: {}) {
         })}
 
         {isLoading &&
+          !error &&
           Array.from({ length: 6 }).map((_, i) => (
             <ImageCardSkeleton key={i} />
           ))}
       </ul>
+      {error && <P>{error.message}</P>}
 
       <div ref={loadMoreRef}></div>
     </>
