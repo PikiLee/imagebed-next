@@ -5,11 +5,10 @@ import { useEffect, useRef } from 'react'
 import useSWRInfinite from 'swr/infinite'
 
 import ImageCard from '@/components/image-card'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { getKey } from '@/lib/getKey'
 import { getURLFromKey } from '@/lib/key'
 
-import { Skeleton } from './ui/skeleton'
+import ImageCardSkeleton from './ImageCardSkeleton'
 
 export default function ImageGrid({}: {}) {
   const {
@@ -60,21 +59,7 @@ export default function ImageGrid({}: {}) {
 
         {isLoading &&
           Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader></CardHeader>
-              <CardContent>
-                <Skeleton className="aspect-video" />
-              </CardContent>
-              <CardFooter>
-                <div className="flex flex-col gap-4 w-full">
-                  <div className="flex flex-col gap-2 w-full">
-                    <Skeleton className="h-4" />
-                    <Skeleton className="w-1/2 h-4" />
-                  </div>
-                  <Skeleton className="h-8" />
-                </div>
-              </CardFooter>
-            </Card>
+            <ImageCardSkeleton key={i} />
           ))}
       </ul>
 
