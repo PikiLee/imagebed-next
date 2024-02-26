@@ -7,6 +7,8 @@ import { listFiles } from '@/lib/file'
 import { getKey } from '@/lib/getKey'
 import { prefix } from '@/lib/key'
 
+export const dynamic = 'force-dynamic'
+
 export default async function History() {
   const images = await listFiles(prefix)
 
