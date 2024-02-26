@@ -1,4 +1,5 @@
 import { File } from 'buffer'
+import { revalidatePath } from 'next/cache'
 import { NextRequest } from 'next/server'
 
 import { deleteFile, uploadFile } from '@/lib/file'
@@ -23,6 +24,8 @@ export async function POST(request: Request) {
   const key = getImageKey(id)
   await uploadFile(key, buf)
 
+  revalidatePath('/history')
+
   return Response.json({ url: getURLFromKey(key) })
 }
 
@@ -43,6 +46,8 @@ export async function DELETE(request: Request) {
 
   const key = getImageKey(id)
   await deleteFile(key)
+
+  revalidatePath('/history')
 
   return Response.json({ success: true })
 }
