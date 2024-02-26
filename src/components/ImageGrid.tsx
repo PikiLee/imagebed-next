@@ -12,7 +12,7 @@ import { getURLFromKey } from '@/lib/key'
 import { Skeleton } from './ui/skeleton'
 
 export default function ImageGrid({}: {}) {
-  const { data, error, setSize, isValidating } = useSWRInfinite(
+  const { data, error, size, setSize, isLoading } = useSWRInfinite(
     getKey,
     ({ pageIndex, NextContinuationToken }) => {
       //   console.log('fetching', pageIndex, NextContinuationToken)
@@ -21,6 +21,8 @@ export default function ImageGrid({}: {}) {
       ).then((res) => res.json())
     }
   )
+  const isLoadingMore =
+    isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
   const images = {
     Contents: data?.flatMap((d) => d.Contents ?? []),
     IsTruncated: data ? data[data.length - 1].IsTruncated : false,
@@ -35,10 +37,10 @@ export default function ImageGrid({}: {}) {
   const inView = useInView(loadMoreRef, { margin: '0px 0px -50px 0px' })
 
   useEffect(() => {
-    if (inView && !isValidating) {
+    if (inView && !isLoadingMore && imagesRef.current.IsTruncated) {
       setSize((size) => size + 1)
     }
-  }, [inView, setSize, isValidating])
+  }, [inView, setSize, isLoadingMore])
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function ImageGrid({}: {}) {
           )
         })}
 
-        {isValidating &&
+        {isLoadingMore &&
           Array.from({ length: 6 }).map((_, i) => (
             <Card key={i}>
               <CardHeader></CardHeader>
