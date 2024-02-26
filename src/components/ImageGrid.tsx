@@ -1,5 +1,6 @@
 'use client'
 
+import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3'
 import { useInView } from 'framer-motion'
 import { useEffect, useRef } from 'react'
 import useSWRInfinite from 'swr/infinite'
@@ -10,6 +11,10 @@ import { getImageKey, getURLFromKey } from '@/lib/key'
 
 import ImageCardSkeleton from './ImageCardSkeleton'
 import { P } from './ui/p'
+
+type ArrayElement<ArrType> = ArrType extends readonly (infer ElementType)[]
+  ? ElementType
+  : never
 
 export default function ImageGrid({}: {}) {
   const {
@@ -28,6 +33,7 @@ export default function ImageGrid({}: {}) {
       throw new Error('Failed to load more images')
     })
   })
+
   const isLoading =
     isInitialLoading ||
     (size > 0 && data && typeof data[size - 1] === 'undefined')
@@ -54,17 +60,28 @@ export default function ImageGrid({}: {}) {
     const match = url.match(/images\/(?<id>.*)/)
     const id = match?.groups?.id
     if (id) {
-      fetch(`/api/images`, {
-        method: 'DELETE',
-        body: JSON.stringify({ id }),
-      }).then((res) => {
-        if (res.ok) {
-          const newData = data?.map((d) =>
-            d.Contents?.filter((c: any) => c.Key !== getImageKey(id))
-          )
-          mutate(newData)
+      mutate(
+        () => {
+          return fetch(`/api/images`, {
+            method: 'DELETE',
+            body: JSON.stringify({ id }),
+          }).then((res) => {
+            return res.json()
+          })
+        },
+        {
+          optimisticData: data?.map((d) => {
+            return {
+              ...d,
+              Contents: d.Contents?.filter(
+                (c: ArrayElement<ListObjectsV2CommandOutput['Contents']>) =>
+                  c.Key !== getImageKey(id)
+              ),
+            }
+          }),
+          populateCache: false,
         }
-      })
+      )
     }
   }
 
