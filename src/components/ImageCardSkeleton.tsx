@@ -16,6 +16,7 @@ export default function ImageCardSkeleton() {
             <Skeleton className="w-1/2 h-4" />
           </div>
           <Skeleton className="h-8" />
+          <Skeleton className="h-8" />
         </div>
       </CardFooter>
     </Card>
