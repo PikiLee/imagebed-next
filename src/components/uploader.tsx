@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { P } from '@/components/ui/p'
 
-import ImageCard from '../image-card'
-import ImageCardSkeleton from '../ImageCardSkeleton'
-import { useToast } from '../ui/use-toast'
+import ImageCard from './image-card'
+import ImageCardSkeleton from './ImageCardSkeleton'
+import { useToast } from './ui/use-toast'
 
-export default function UploadButton() {
+export default function Uploader() {
   const { toast } = useToast()
 
   const { data: url } = useSWR('/api/images')
