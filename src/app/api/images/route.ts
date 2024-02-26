@@ -1,7 +1,10 @@
 import { File } from 'buffer'
+import { NextRequest } from 'next/server'
 
 import { uploadFile } from '@/lib/file'
+import { listFiles } from '@/lib/file'
 import { generateID, getImageKey, getURLFromKey } from '@/lib/key'
+import { prefix } from '@/lib/key'
 
 export async function POST(request: Request) {
   const formData = await request.formData()
@@ -21,4 +24,12 @@ export async function POST(request: Request) {
   await uploadFile(key, buf)
 
   return Response.json({ url: getURLFromKey(key) })
+}
+
+export async function GET(request: NextRequest) {
+  const continuationToken =
+    request.nextUrl.searchParams.get('continuationToken')
+  const images = await listFiles(prefix, continuationToken ?? undefined)
+
+  return Response.json(images)
 }

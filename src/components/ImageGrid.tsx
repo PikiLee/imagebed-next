@@ -20,7 +20,7 @@ export default function ImageGrid({}: {}) {
     isLoading: isInitialLoading,
   } = useSWRInfinite(getKey, ({ pageIndex, NextContinuationToken }) => {
     return fetch(
-      `/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
+      `/api/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
     ).then((res) => {
       if (res.ok) return res.json()
 
