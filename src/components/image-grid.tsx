@@ -80,9 +80,11 @@ export default function ImageGrid({}: {}) {
               body: JSON.stringify({ id }),
             })
             if (res.ok) {
-              const match = recentUploadImageUrl.match(/images\/(?<id>.*)/)
-              const recentUploadImageId = match?.groups?.id
-              if (recentUploadImageId === id) globalMutate('/api/images', '')
+              if (recentUploadImageUrl) {
+                const match = recentUploadImageUrl.match(/images\/(?<id>.*)/)
+                const recentUploadImageId = match?.groups?.id
+                if (recentUploadImageId === id) globalMutate('/api/images', '')
+              }
               return res.json()
             }
             throw new Error('Failed to delete image.')
