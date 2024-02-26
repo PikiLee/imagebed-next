@@ -9,6 +9,11 @@ export async function POST(request: Request) {
   if (!(image instanceof File)) {
     return Response.json({ error: 'No image provided' }, { status: 400 })
   }
+
+  if (!/image\/.*/i.test(image.type)) {
+    return Response.json({ error: 'Invalid image type' }, { status: 400 })
+  }
+
   const buf = Buffer.from(await image.arrayBuffer())
 
   const id = generateID()
