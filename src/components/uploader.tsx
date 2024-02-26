@@ -63,10 +63,10 @@ export default function Uploader() {
 
       if (!res.ok) throw new Error(`Failed to delete image`)
 
-      return undefined
+      return ''
     },
     {
-      optimisticData: undefined,
+      optimisticData: '',
       revalidate: false,
       populateCache: true,
       onError: (err) =>
