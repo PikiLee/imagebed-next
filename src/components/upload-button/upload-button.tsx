@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 
 import { Button } from '@/components/ui/button'
@@ -9,43 +10,78 @@ import { P } from '@/components/ui/p'
 
 import ImageCard from '../image-card'
 import ImageCardSkeleton from '../ImageCardSkeleton'
+import { useToast } from '../ui/use-toast'
 
 export default function UploadButton() {
-  const { data, trigger, isMutating, error } = useSWRMutation(
+  const { toast } = useToast()
+
+  const { data: url } = useSWR('/api/images')
+  const {
+    trigger: triggerUpload,
+    isMutating: isUploading,
+    error: uploadError,
+  } = useSWRMutation(
     `/api/images`,
-    (
+    async (
       url,
       {
-        arg: { method, body },
+        arg,
       }: {
-        arg: {
-          method: 'POST' | 'DELETE'
-          body: FormData | { id: string }
-        }
+        arg: FormData
       }
     ) => {
-      return fetch(url, {
-        method,
-        body: body instanceof FormData ? body : JSON.stringify(body),
-      }).then((res) => {
-        if (res.ok) return res.json()
-
-        throw new Error(
-          `Failed to ${method === 'POST' ? 'upload' : 'delete'} image`
-        )
+      const res = await fetch(url, {
+        method: 'POST',
+        body: arg,
       })
+
+      if (!res.ok) throw new Error(`Failed to upload image`)
+
+      const data = await res.json()
+      return data.url
+    },
+    {
+      revalidate: false,
+      populateCache: true,
     }
   )
-  const url = data?.url
+
+  const { trigger: triggerDelete } = useSWRMutation(
+    `/api/images`,
+    async (
+      url,
+      {
+        arg,
+      }: {
+        arg: string
+      }
+    ) => {
+      const res = await fetch(url, {
+        method: 'DELETE',
+        body: JSON.stringify({ id: arg }),
+      })
+
+      if (!res.ok) throw new Error(`Failed to delete image`)
+
+      return undefined
+    },
+    {
+      optimisticData: undefined,
+      revalidate: false,
+      populateCache: true,
+      onError: (err) =>
+        toast({
+          title: err.message,
+        }),
+    }
+  )
 
   async function onDelete() {
+    if (!url) return
     const match = url.match(/images\/(?<id>.*)/)
     const id = match?.groups?.id
     if (id) {
-      trigger({
-        method: 'DELETE',
-        body: { id },
-      })
+      triggerDelete(id)
     }
   }
 
@@ -57,15 +93,12 @@ export default function UploadButton() {
 
     const formData = new FormData()
     formData.append('image', file)
-    trigger({
-      method: 'POST',
-      body: formData,
-    })
+    triggerUpload(formData)
   }
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full max-w-120">
-      <Button onClick={() => inputRef.current?.click()} disabled={isMutating}>
-        {isMutating ? 'Loading...' : 'Upload Image'}
+      <Button onClick={() => inputRef.current?.click()} disabled={isUploading}>
+        {isUploading ? 'Uploading...' : 'Upload Image'}
       </Button>
       <Input
         className="fixed left-[-9999px] top-0"
@@ -74,12 +107,12 @@ export default function UploadButton() {
         onChange={onChange}
         ref={inputRef}
       />
-      {isMutating ? (
+      {isUploading ? (
         <ImageCardSkeleton />
       ) : (
         url && <ImageCard url={url} onDelete={onDelete} />
       )}
-      {error && <P>{error}</P>}
+      {uploadError && <P>{uploadError}</P>}
     </div>
   )
 }
