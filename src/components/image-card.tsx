@@ -13,7 +13,7 @@ export default function ImageCard({
   onDelete,
 }: {
   url: string
-  onDelete: () => void
+  onDelete: (url: string) => void
 }) {
   const { toast } = useToast()
 
@@ -38,7 +38,7 @@ export default function ImageCard({
           >
             Copy URL
           </Button>
-          <Button onClick={onDelete}>Delete</Button>
+          <Button onClick={() => onDelete(url)}>Delete</Button>
         </div>
       </CardFooter>
     </Card>

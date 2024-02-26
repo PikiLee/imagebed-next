@@ -6,7 +6,7 @@ import useSWRInfinite from 'swr/infinite'
 
 import ImageCard from '@/components/image-card'
 import { getKey } from '@/lib/getKey'
-import { getURLFromKey } from '@/lib/key'
+import { getImageKey, getURLFromKey } from '@/lib/key'
 
 import ImageCardSkeleton from './ImageCardSkeleton'
 import { P } from './ui/p'
@@ -18,6 +18,7 @@ export default function ImageGrid({}: {}) {
     size,
     setSize,
     isLoading: isInitialLoading,
+    mutate,
   } = useSWRInfinite(getKey, ({ pageIndex, NextContinuationToken }) => {
     return fetch(
       `/api/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
@@ -49,6 +50,24 @@ export default function ImageGrid({}: {}) {
     }
   }, [inView, setSize, isLoading])
 
+  function onDelete(url: string) {
+    const match = url.match(/images\/(?<id>.*)/)
+    const id = match?.groups?.id
+    if (id) {
+      fetch(`/api/images`, {
+        method: 'DELETE',
+        body: JSON.stringify({ id }),
+      }).then((res) => {
+        if (res.ok) {
+          const newData = data?.map((d) =>
+            d.Contents?.filter((c: any) => c.Key !== getImageKey(id))
+          )
+          mutate(newData)
+        }
+      })
+    }
+  }
+
   return (
     <>
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -56,7 +75,7 @@ export default function ImageGrid({}: {}) {
           return (
             url && (
               <li key={url}>
-                <ImageCard url={url} />
+                <ImageCard url={url} onDelete={onDelete} />
               </li>
             )
           )
