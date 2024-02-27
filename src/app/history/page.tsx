@@ -22,7 +22,7 @@ export default async function History() {
           },
         }}
       >
-        {images.Contents && <ImageGrid />}
+        <ImageGrid />
       </SWRProvider>
     </main>
   )

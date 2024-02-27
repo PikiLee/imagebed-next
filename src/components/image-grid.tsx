@@ -40,9 +40,7 @@ export default function ImageGrid({}: {}) {
     })
   })
 
-  const isLoading =
-    isInitialLoading ||
-    (size > 0 && data && typeof data[size - 1] === 'undefined')
+  const isLoading = size > 0 && data && typeof data[size - 1] === 'undefined'
   const images = {
     Contents: data?.flatMap((d) => d.Contents ?? []),
     IsTruncated: data ? data[data.length - 1].IsTruncated : false,
