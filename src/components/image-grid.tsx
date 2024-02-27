@@ -30,15 +30,22 @@ export default function ImageGrid({}: {}) {
     setSize,
     isLoading: isInitialLoading,
     mutate,
-  } = useSWRInfinite(getKey, ({ pageIndex, NextContinuationToken }) => {
-    return fetch(
-      `/api/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
-    ).then((res) => {
-      if (res.ok) return res.json()
+  } = useSWRInfinite(
+    getKey,
+    async ({ pageIndex, NextContinuationToken }) => {
+      const res = await fetch(
+        `/api/images${NextContinuationToken ? `?continuationToken=${NextContinuationToken}` : ''}`
+      )
 
-      throw new Error('Failed to load more images')
-    })
-  })
+      if (!res.ok) throw new Error('Failed to load images')
+
+      const data = await res.json()
+      return data
+    },
+    {
+      revalidateAll: true,
+    }
+  )
 
   const isLoading = size > 0 && data && typeof data[size - 1] === 'undefined'
   const images = {
@@ -50,7 +57,8 @@ export default function ImageGrid({}: {}) {
   const urls = images.Contents?.map(
     (image) => image.Key && getURLFromKey(image.Key)
   )
-  const isEmpty = urls?.length === 0
+  const numberOfUrls = urls?.length ?? 0
+  const isEmpty = numberOfUrls === 0
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const inView = useInView(loadMoreRef, { margin: '0px 0px -50px 0px' })
@@ -78,6 +86,8 @@ export default function ImageGrid({}: {}) {
                 const recentUploadImageId = match?.groups?.id
                 if (recentUploadImageId === id) globalMutate('/api/images', '')
               }
+
+              if (numberOfUrls % 6 === 1 && numberOfUrls > 6) setSize(size - 1)
               return res.json()
             }
             throw new Error('Failed to delete image.')
