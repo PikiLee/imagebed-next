@@ -50,6 +50,7 @@ export default function ImageGrid({}: {}) {
   const urls = images.Contents?.map(
     (image) => image.Key && getURLFromKey(image.Key)
   )
+  const isEmpty = urls?.length === 0
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const inView = useInView(loadMoreRef, { margin: '0px 0px -50px 0px' })
@@ -123,6 +124,7 @@ export default function ImageGrid({}: {}) {
             <ImageCardSkeleton key={i} />
           ))}
       </ul>
+      {isEmpty && <P>No images found</P>}
       {error && <P>{error.message}</P>}
 
       <div ref={loadMoreRef}></div>
