@@ -1,4 +1,4 @@
-An user interface to upload images to the Cloudflare R2 and get back the URLs for those images. 
+A website to upload images to the Cloudflare R2 and get back the URLs for those images. 
 + Constructed using Next.js
 + The uploading page is protected by a password while uploaded images can be accessed publicly.
 
