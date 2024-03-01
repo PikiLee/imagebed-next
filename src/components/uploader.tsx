@@ -7,6 +7,7 @@ import useSWRMutation from 'swr/mutation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { P } from '@/components/ui/p'
+import { cn } from '@/lib/utils'
 
 import ImageCard from './image-card'
 import ImageCardSkeleton from './image-card-skeleton'
@@ -124,7 +125,7 @@ export default function Uploader() {
     triggerUpload(files)
   }
   return (
-    <div className="flex flex-col gap-4 items-center justify-center w-full max-w-120">
+    <div className="flex flex-col gap-4 items-center justify-center w-full">
       <Button onClick={() => inputRef.current?.click()} disabled={isUploading}>
         {isUploading ? 'Uploading...' : 'Upload Image'}
       </Button>
@@ -139,13 +140,23 @@ export default function Uploader() {
       {isUploading ? (
         <ImageCardSkeleton />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          className={cn(
+            'grid grid-cols-1 gap-4',
+            uploadResults?.length === 1
+              ? 'lg:grid-cols-1 sm:grid-cols-1'
+              : uploadResults?.length === 2
+                ? 'lg:grid-cols-2 sm:grid-cols-2'
+                : 'sm:grid-cols-2 lg:grid-cols-3'
+          )}
+        >
           {uploadResults?.map((uploadResult) => {
             return uploadResult.status === 'fulfilled' ? (
               <ImageCard
                 url={uploadResult.value}
                 onDelete={onDelete}
                 key={uploadResult.value}
+                className="w-full max-w-120"
               />
             ) : (
               'Error uploading image'
