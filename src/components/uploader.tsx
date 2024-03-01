@@ -12,10 +12,17 @@ import ImageCard from './image-card'
 import ImageCardSkeleton from './image-card-skeleton'
 import { useToast } from './ui/use-toast'
 
+export function isFulfilled<T>(
+  value: PromiseSettledResult<T>
+): value is PromiseFulfilledResult<T> {
+  return value.status === 'fulfilled'
+}
+
 export default function Uploader() {
   const { toast } = useToast()
 
-  const { data: url } = useSWR('/api/images')
+  const { data: uploadResults } =
+    useSWR<PromiseSettledResult<string>[]>('/api/images')
   const {
     trigger: triggerUpload,
     isMutating: isUploading,
@@ -27,28 +34,35 @@ export default function Uploader() {
       {
         arg,
       }: {
-        arg: FormData
+        arg: FileList
       }
     ) => {
-      const res = await fetch(url, {
+      const requestUrl = new URL(url, window.location.origin)
+      requestUrl.searchParams.set('numOfImages', arg.length.toString())
+      const res = await fetch(requestUrl, {
         method: 'POST',
       })
 
       if (!res.ok) throw new Error(`Failed to upload image`)
 
-      const { uploadUrl, imageUrl } = await res.json()
+      const urls = await res.json()
 
-      const uploadRes = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: arg.get('image'),
-        headers: {
-          'Content-Type': 'image/*',
-        },
-      })
+      const uploadRes = await Promise.allSettled(
+        Array.from(arg).map(async (image, index) => {
+          const res = await fetch(urls[index].uploadUrl, {
+            method: 'PUT',
+            body: image,
+            headers: {
+              'Content-Type': 'image/*',
+            },
+          })
+          if (!res.ok) throw new Error(`Failed to upload image`)
 
-      if (!uploadRes.ok) throw new Error(`Failed to upload image`)
+          return urls[index].imageUrl
+        })
+      )
 
-      return imageUrl
+      return uploadRes
     },
     {
       revalidate: false,
@@ -66,19 +80,24 @@ export default function Uploader() {
         arg: string
       }
     ) => {
+      if (!uploadResults) return
+      const matchedResult = uploadResults
+        .filter(isFulfilled)
+        .find((r) => r.value === arg)
+      const match = matchedResult?.value?.match(/images\/(?<id>.*)/)
+      const id = match?.groups?.id
+      if (!id) throw new Error(`Failed to delete image`)
+
       const res = await fetch(url, {
         method: 'DELETE',
-        body: JSON.stringify({ id: arg }),
+        body: JSON.stringify({ id }),
       })
 
       if (!res.ok) throw new Error(`Failed to delete image`)
-
-      return ''
     },
     {
-      optimisticData: '',
       revalidate: false,
-      populateCache: true,
+      populateCache: false,
       onError: (err) =>
         toast({
           title: err.message,
@@ -86,24 +105,23 @@ export default function Uploader() {
     }
   )
 
-  async function onDelete() {
-    if (!url) return
-    const match = url.match(/images\/(?<id>.*)/)
-    const id = match?.groups?.id
-    if (id) {
-      triggerDelete(id)
-    }
+  async function onDelete(url: string) {
+    if (!uploadResults) return
+    triggerDelete(url, {
+      optimisticData: uploadResults.filter(
+        (r) => !isFulfilled(r) || r.value !== url
+      ),
+      rollbackOnError: true,
+    })
   }
 
   const inputRef = useRef<HTMLInputElement>(null)
 
   async function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    if (!file) return
+    const files = event.target.files
+    if (!files) return
 
-    const formData = new FormData()
-    formData.append('image', file)
-    triggerUpload(formData)
+    triggerUpload(files)
   }
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full max-w-120">
@@ -116,12 +134,26 @@ export default function Uploader() {
         accept="image/*"
         onChange={onChange}
         ref={inputRef}
+        multiple
       />
       {isUploading ? (
         <ImageCardSkeleton />
       ) : (
-        url && <ImageCard url={url} onDelete={onDelete} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {uploadResults?.map((uploadResult) => {
+            return uploadResult.status === 'fulfilled' ? (
+              <ImageCard
+                url={uploadResult.value}
+                onDelete={onDelete}
+                key={uploadResult.value}
+              />
+            ) : (
+              'Error uploading image'
+            )
+          })}
+        </div>
       )}
+
       {uploadError && <P>{uploadError.message}</P>}
     </div>
   )

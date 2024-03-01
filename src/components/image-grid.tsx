@@ -3,7 +3,7 @@
 import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3'
 import { useInView } from 'framer-motion'
 import { useEffect, useRef } from 'react'
-import useSWR, { useSWRConfig } from 'swr'
+import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
 import ImageCard from '@/components/image-card'
@@ -13,6 +13,7 @@ import { getImageKey, getURLFromKey } from '@/lib/key'
 import ImageCardSkeleton from './image-card-skeleton'
 import { P } from './ui/p'
 import { useToast } from './ui/use-toast'
+import { isFulfilled } from './uploader'
 
 type ArrayElement<ArrType> = ArrType extends readonly (infer ElementType)[]
   ? ElementType
@@ -20,9 +21,9 @@ type ArrayElement<ArrType> = ArrType extends readonly (infer ElementType)[]
 
 export default function ImageGrid({}: {}) {
   const { toast } = useToast()
-  const { mutate: globalMutate } = useSWRConfig()
 
-  const { data: recentUploadImageUrl } = useSWR('/api/images')
+  const { data: uploadResults, mutate: uploadMutate } =
+    useSWR<PromiseSettledResult<string>[]>('/api/images')
   const {
     data,
     error,
@@ -81,10 +82,12 @@ export default function ImageGrid({}: {}) {
               body: JSON.stringify({ id }),
             })
             if (res.ok) {
-              if (recentUploadImageUrl) {
-                const match = recentUploadImageUrl.match(/images\/(?<id>.*)/)
-                const recentUploadImageId = match?.groups?.id
-                if (recentUploadImageId === id) globalMutate('/api/images', '')
+              if (uploadResults) {
+                uploadMutate(
+                  uploadResults.filter(
+                    (r) => !isFulfilled(r) || r.value !== url
+                  )
+                )
               }
 
               if (numberOfUrls % 6 === 1 && numberOfUrls > 6) setSize(size - 1)
