@@ -156,7 +156,6 @@ export default function Uploader() {
                 url={uploadResult.value}
                 onDelete={onDelete}
                 key={uploadResult.value}
-                className="w-full max-w-120"
               />
             ) : (
               'Error uploading image'

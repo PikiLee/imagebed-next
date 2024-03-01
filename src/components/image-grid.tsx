@@ -125,11 +125,7 @@ export default function ImageGrid({}: {}) {
           return (
             url && (
               <li key={url}>
-                <ImageCard
-                  url={url}
-                  onDelete={onDelete}
-                  className="w-full max-w-120"
-                />
+                <ImageCard url={url} onDelete={onDelete} />
               </li>
             )
           )

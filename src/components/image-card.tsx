@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ComponentProps } from 'react'
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 import { Button } from './ui/button'
 import { useToast } from './ui/use-toast'
@@ -11,6 +12,7 @@ import { useToast } from './ui/use-toast'
 export default function ImageCard({
   url,
   onDelete,
+  className,
   ...props
 }: {
   url: string
@@ -19,7 +21,7 @@ export default function ImageCard({
   const { toast } = useToast()
 
   return (
-    <Card {...props}>
+    <Card {...props} className={cn('w-full max-w-120', className)}>
       <CardHeader></CardHeader>
       <CardContent>
         <img src={url} alt="Uploaded Image" width={1920} height={1080} />
