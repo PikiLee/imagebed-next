@@ -128,6 +128,7 @@ export default function Uploader() {
     triggerUpload(files)
   }
 
+  const numOfItems = isUploading ? numOfImagesToUpload : numOfUploadedImages
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
       <Button onClick={() => inputRef.current?.click()} disabled={isUploading}>
@@ -142,30 +143,19 @@ export default function Uploader() {
         multiple
       />
 
-      {isUploading ? (
-        <div
-          className={cn('grid grid-cols-1 gap-4', {
-            'w-1/3 lg:grid-cols-1 sm:grid-cols-1': numOfImagesToUpload === 1,
-            'w-2/3 lg:grid-cols-2 sm:grid-cols-2': numOfImagesToUpload === 2,
-            'w-full sm:grid-cols-2 lg:grid-cols-3':
-              numOfImagesToUpload > 2 || numOfImagesToUpload === 0,
-          })}
-        >
-          {Array.from({ length: numOfImagesToUpload }).map((_, index) => (
-            <ImageCardSkeleton key={index} />
-          ))}
-        </div>
-      ) : (
-        uploadResults && (
-          <div
-            className={cn('grid grid-cols-1 gap-4 justify-center', {
-              'w-1/3 lg:grid-cols-1 sm:grid-cols-1': numOfUploadedImages === 1,
-              'w-2/3 lg:grid-cols-2 sm:grid-cols-2': numOfUploadedImages === 2,
-              'w-full sm:grid-cols-2 lg:grid-cols-3':
-                numOfUploadedImages > 2 || numOfUploadedImages === 0,
-            })}
-          >
-            {uploadResults.map((uploadResult) => {
+      <div
+        className={cn('grid grid-cols-1 gap-4 justify-center', {
+          'w-1/3 lg:grid-cols-1 sm:grid-cols-1': numOfItems === 1,
+          'w-2/3 lg:grid-cols-2 sm:grid-cols-2': numOfItems === 2,
+          'w-full sm:grid-cols-2 lg:grid-cols-3':
+            numOfItems > 2 || numOfItems === 0,
+        })}
+      >
+        {isUploading
+          ? Array.from({ length: numOfItems }).map((_, index) => (
+              <ImageCardSkeleton key={index} />
+            ))
+          : uploadResults?.map((uploadResult) => {
               return uploadResult.status === 'fulfilled' ? (
                 <ImageCard
                   url={uploadResult.value}
@@ -178,9 +168,7 @@ export default function Uploader() {
                 </P>
               )
             })}
-          </div>
-        )
-      )}
+      </div>
 
       {uploadError && <P>{uploadError.message}</P>}
     </div>
