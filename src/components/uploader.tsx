@@ -24,6 +24,11 @@ export default function Uploader() {
 
   const { data: uploadResults } =
     useSWR<PromiseSettledResult<string>[]>('/api/images')
+
+  const inputRef = useRef<HTMLInputElement>(null)
+  const numOfImagesToUpload = inputRef.current?.files?.length ?? 0
+  const numOfUploadedImages = uploadResults?.length ?? 0
+
   const {
     trigger: triggerUpload,
     isMutating: isUploading,
@@ -116,14 +121,13 @@ export default function Uploader() {
     })
   }
 
-  const inputRef = useRef<HTMLInputElement>(null)
-
   async function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files
     if (!files) return
 
     triggerUpload(files)
   }
+
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
       <Button onClick={() => inputRef.current?.click()} disabled={isUploading}>
@@ -137,31 +141,45 @@ export default function Uploader() {
         ref={inputRef}
         multiple
       />
+
       {isUploading ? (
-        <ImageCardSkeleton />
-      ) : (
         <div
-          className={cn(
-            'grid grid-cols-1 gap-4',
-            uploadResults?.length === 1
-              ? 'lg:grid-cols-1 sm:grid-cols-1'
-              : uploadResults?.length === 2
-                ? 'lg:grid-cols-2 sm:grid-cols-2'
-                : 'sm:grid-cols-2 lg:grid-cols-3'
-          )}
-        >
-          {uploadResults?.map((uploadResult) => {
-            return uploadResult.status === 'fulfilled' ? (
-              <ImageCard
-                url={uploadResult.value}
-                onDelete={onDelete}
-                key={uploadResult.value}
-              />
-            ) : (
-              'Error uploading image'
-            )
+          className={cn('grid grid-cols-1 gap-4', {
+            'w-1/3 lg:grid-cols-1 sm:grid-cols-1': numOfImagesToUpload === 1,
+            'w-2/3 lg:grid-cols-2 sm:grid-cols-2': numOfImagesToUpload === 2,
+            'w-full sm:grid-cols-2 lg:grid-cols-3':
+              numOfImagesToUpload > 2 || numOfImagesToUpload === 0,
           })}
+        >
+          {Array.from({ length: numOfImagesToUpload }).map((_, index) => (
+            <ImageCardSkeleton key={index} />
+          ))}
         </div>
+      ) : (
+        uploadResults && (
+          <div
+            className={cn('grid grid-cols-1 gap-4 justify-center', {
+              'w-1/3 lg:grid-cols-1 sm:grid-cols-1': numOfUploadedImages === 1,
+              'w-2/3 lg:grid-cols-2 sm:grid-cols-2': numOfUploadedImages === 2,
+              'w-full sm:grid-cols-2 lg:grid-cols-3':
+                numOfUploadedImages > 2 || numOfUploadedImages === 0,
+            })}
+          >
+            {uploadResults.map((uploadResult) => {
+              return uploadResult.status === 'fulfilled' ? (
+                <ImageCard
+                  url={uploadResult.value}
+                  onDelete={onDelete}
+                  key={uploadResult.value}
+                />
+              ) : (
+                <P className="grid min-h-60 place-items-center justify-self-stretch">
+                  Error uploading image
+                </P>
+              )
+            })}
+          </div>
+        )
       )}
 
       {uploadError && <P>{uploadError.message}</P>}
