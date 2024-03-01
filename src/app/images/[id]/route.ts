@@ -1,12 +1,14 @@
-import { getFile } from '@/lib/file'
+import { getFileUrl } from '@/lib/file'
 import { getImageKey } from '@/lib/key'
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   const key = getImageKey(params.id)
-  const image = await getFile(key)
+  const url = await getFileUrl(key)
 
-  return new Response(image)
+  return Response.redirect(url)
 }

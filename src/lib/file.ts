@@ -5,7 +5,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
-import { Readable } from 'stream'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 import { privateEnv } from './priavteEnv'
 
@@ -20,23 +20,28 @@ const client = new S3Client({
 })
 
 // Upload a file to R2 bucket
-export function uploadFile(key: string, file: Buffer) {
-  return client.send(
+export function getUploadFileUrl(key: string): Promise<string> {
+  return getSignedUrl(
+    client,
     new PutObjectCommand({
       Bucket: privateEnv.BUCKET,
       Key: key,
-      Body: file,
-    })
+    }),
+    {
+      expiresIn: 3600,
+    }
   )
 }
 
 // Get a file from R2 bucket
-export async function getFile(key: string): Promise<Buffer> {
-  const res = await client.send(
-    new GetObjectCommand({ Bucket: privateEnv.BUCKET, Key: key })
+export async function getFileUrl(key: string): Promise<string> {
+  return getSignedUrl(
+    client,
+    new GetObjectCommand({ Bucket: privateEnv.BUCKET, Key: key }),
+    {
+      expiresIn: 3600,
+    }
   )
-  if (!res.Body) throw new Error('No body in response')
-  return Buffer.from(await streamToBuffer(res.Body as Readable))
 }
 
 export async function listFiles(prefix: string, continuationToken?: string) {
@@ -50,17 +55,8 @@ export async function listFiles(prefix: string, continuationToken?: string) {
   )
 }
 
-export async function deleteFile(key: string) {
-  return await client.send(
+export async function deleteFile(key: string): Promise<void> {
+  await client.send(
     new DeleteObjectCommand({ Bucket: privateEnv.BUCKET, Key: key })
   )
-}
-
-// Convert a readable stream to a buffer
-async function streamToBuffer(stream: Readable) {
-  const chunks = []
-  for await (let chunk of stream) {
-    chunks.push(chunk)
-  }
-  return Buffer.concat(chunks)
 }

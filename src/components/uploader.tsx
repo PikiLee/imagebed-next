@@ -32,13 +32,23 @@ export default function Uploader() {
     ) => {
       const res = await fetch(url, {
         method: 'POST',
-        body: arg,
       })
 
       if (!res.ok) throw new Error(`Failed to upload image`)
 
-      const data = await res.json()
-      return data.url
+      const { uploadUrl, imageUrl } = await res.json()
+
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: arg.get('image'),
+        headers: {
+          'Content-Type': 'image/*',
+        },
+      })
+
+      if (!uploadRes.ok) throw new Error(`Failed to upload image`)
+
+      return imageUrl
     },
     {
       revalidate: false,
@@ -112,7 +122,7 @@ export default function Uploader() {
       ) : (
         url && <ImageCard url={url} onDelete={onDelete} />
       )}
-      {uploadError && <P>{uploadError}</P>}
+      {uploadError && <P>{uploadError.message}</P>}
     </div>
   )
 }
