@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { ComponentProps } from 'react'
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 
@@ -10,14 +11,15 @@ import { useToast } from './ui/use-toast'
 export default function ImageCard({
   url,
   onDelete,
+  ...props
 }: {
   url: string
   onDelete: (url: string) => void
-}) {
+} & ComponentProps<typeof Card>) {
   const { toast } = useToast()
 
   return (
-    <Card>
+    <Card {...props}>
       <CardHeader></CardHeader>
       <CardContent>
         <img src={url} alt="Uploaded Image" width={1920} height={1080} />
