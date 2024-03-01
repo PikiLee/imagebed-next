@@ -37,3 +37,22 @@ PASSWORD=
 # The domain name of your website
 NEXT_PUBLIC_DOMAIN==
 ```
+
+### Set cors settings in your R2 bucket settings
+```
+[
+  {
+    "AllowedOrigins": [
+      "https://imagebed.apiki.me"
+    ],
+    "AllowedMethods": [
+      "GET",
+      "DELETE",
+      "PUT"
+    ],
+    "AllowedHeaders": [
+      "Content-Type"
+    ]
+  }
+]
+```
