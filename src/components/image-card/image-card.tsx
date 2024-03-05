@@ -5,8 +5,8 @@ import { ComponentProps } from 'react'
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 
-import { Button } from './ui/button'
-import { useToast } from './ui/use-toast'
+import { Button } from '../ui/button'
+import { useToast } from '../ui/use-toast'
 
 export default function ImageCard({
   url,

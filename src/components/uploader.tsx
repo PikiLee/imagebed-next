@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { P } from '@/components/ui/p'
 import { cn } from '@/lib/utils'
 
-import ImageCard from './image-card'
+import ImageCard from './image-card/image-card'
 import ImageCardSkeleton from './image-card-skeleton'
 import { useToast } from './ui/use-toast'
 

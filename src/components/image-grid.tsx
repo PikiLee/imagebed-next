@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
-import ImageCard from '@/components/image-card'
+import ImageCard from '@/components/image-card/image-card'
 import { getKey } from '@/lib/getKey'
 import { getImageKey, getURLFromKey } from '@/lib/key'
 

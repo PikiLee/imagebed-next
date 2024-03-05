@@ -1,0 +1,48 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="rounded-lg border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50"
+  >
+    <div
+      class="flex flex-col space-y-1.5 p-6"
+    />
+    <div
+      class="p-6 pt-0"
+    >
+      <img
+        alt="Uploaded Image"
+        height="1080"
+        src="http://localhost:3000/image.jpg"
+        width="1920"
+      />
+    </div>
+    <div
+      class="flex items-center p-6 pt-0"
+    >
+      <div
+        class="flex flex-col gap-4"
+      >
+        <a
+          class="break-all"
+          href="http://localhost:3000/image.jpg"
+          target="_blank"
+        >
+          http://localhost:3000/image.jpg
+        </a>
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 bg-slate-900 text-slate-50 hover:bg-slate-900/90 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90 h-10 px-4 py-2"
+        >
+          Copy URL
+        </button>
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 bg-red-500 text-slate-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-slate-50 dark:hover:bg-red-900/90 h-10 px-4 py-2"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
