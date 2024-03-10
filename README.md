@@ -56,6 +56,3 @@ NEXT_PUBLIC_DOMAIN==
   }
 ]
 ```
-
-### Set CORS
-Add the website domain to your R2 bucket CORS settings.
