@@ -1,6 +1,6 @@
 import { unstable_serialize as infinite_unstable_serialize } from 'swr/infinite'
 
-import ImageGrid from '@/components/image-grid'
+import History from '@/components/history'
 import { SWRProvider } from '@/components/SWR-provider'
 import { H2 } from '@/components/ui/h2'
 import { listFiles } from '@/lib/file'
@@ -9,7 +9,7 @@ import { prefix } from '@/lib/key'
 
 export const dynamic = 'force-dynamic'
 
-export default async function History() {
+export default async function HistoryPage() {
   const images = await listFiles(prefix)
 
   return (
@@ -22,7 +22,7 @@ export default async function History() {
           },
         }}
       >
-        <ImageGrid />
+        <History />
       </SWRProvider>
     </main>
   )

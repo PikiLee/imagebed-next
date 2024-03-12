@@ -6,11 +6,10 @@ import { useEffect, useRef } from 'react'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
-import ImageCard from '@/components/image-card/image-card'
 import { getKey } from '@/lib/getKey'
 import { getImageKey, getURLFromKey } from '@/lib/key'
 
-import ImageCardSkeleton from './image-card-skeleton'
+import ImageGrid from './image-grid/image-grid'
 import { P } from './ui/p'
 import { useToast } from './ui/use-toast'
 import { isFulfilled } from './uploader'
@@ -19,7 +18,7 @@ type ArrayElement<ArrType> = ArrType extends readonly (infer ElementType)[]
   ? ElementType
   : never
 
-export default function ImageGrid({}: {}) {
+export default function History() {
   const { toast } = useToast()
 
   const { data: uploadResults, mutate: uploadMutate } =
@@ -59,7 +58,6 @@ export default function ImageGrid({}: {}) {
     (image) => image.Key && getURLFromKey(image.Key)
   )
   const numberOfUrls = urls?.length ?? 0
-  const isEmpty = numberOfUrls === 0
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const inView = useInView(loadMoreRef, { margin: '0px 0px -50px 0px' })
@@ -120,24 +118,11 @@ export default function ImageGrid({}: {}) {
 
   return (
     <>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {urls?.map((url) => {
-          return (
-            url && (
-              <li key={url}>
-                <ImageCard url={url} onDelete={onDelete} />
-              </li>
-            )
-          )
-        })}
-
-        {isLoading &&
-          !error &&
-          Array.from({ length: 6 }).map((_, i) => (
-            <ImageCardSkeleton key={i} />
-          ))}
-      </ul>
-      {isEmpty && <P>No images found</P>}
+      <ImageGrid
+        urls={urls}
+        isLoadingMore={isLoading && !error}
+        onDelete={onDelete}
+      />
       {error && <P>{error.message}</P>}
 
       <div ref={loadMoreRef}></div>
