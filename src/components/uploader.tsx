@@ -4,14 +4,12 @@ import { useRef } from 'react'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import ImageCard from '@/components/image-card/image-card'
+import ImageCardSkeleton from '@/components/image-card-skeleton'
 import { P } from '@/components/ui/p'
+import { useToast } from '@/components/ui/use-toast'
+import UploadButton from '@/components/upload-button/upload-button'
 import { cn } from '@/lib/utils'
-
-import ImageCard from './image-card/image-card'
-import ImageCardSkeleton from './image-card-skeleton'
-import { useToast } from './ui/use-toast'
 
 export function isFulfilled<T>(
   value: PromiseSettledResult<T>
@@ -131,17 +129,7 @@ export default function Uploader() {
   const numOfItems = isUploading ? numOfImagesToUpload : numOfUploadedImages
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
-      <Button onClick={() => inputRef.current?.click()} disabled={isUploading}>
-        {isUploading ? 'Uploading...' : 'Upload Image'}
-      </Button>
-      <Input
-        className="fixed left-[-9999px] top-0"
-        type="file"
-        accept="image/*"
-        onChange={onChange}
-        ref={inputRef}
-        multiple
-      />
+      <UploadButton isUploading={isUploading} onChange={onChange} />
 
       <div
         className={cn('grid grid-cols-1 gap-4 justify-center', {
