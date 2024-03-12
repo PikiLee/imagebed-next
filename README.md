@@ -43,7 +43,7 @@ NEXT_PUBLIC_DOMAIN==
 [
   {
     "AllowedOrigins": [
-      "https://imagebed.apiki.me"
+      "YOUR_WEBSITE_DOMAIN"
     ],
     "AllowedMethods": [
       "GET",
